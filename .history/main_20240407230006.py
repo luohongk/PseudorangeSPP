@@ -13,20 +13,11 @@ def main():
     # 在这里编写你的程序逻辑
     print("这是入口函数")
     
-    File=["./data/abpo3340.23o","./data/al2h3340.23n"]
+    File=["./data/abpo3340.23o" "./data/al2h3340.23n"]
 
     readfile=ReadFile(File)
-    
-    print("粗略坐标")
+
     print(readfile.ApproxPos)
-    
-    readfile.CaculateSatelites()
-
-    for i in range(40):
-        print(readfile.Pos[i],readfile.PosName[i],readfile.Time[i],readfile.RefTime[i])
-    
-    print("打印完成")
-
 
 
 

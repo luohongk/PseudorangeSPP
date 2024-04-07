@@ -105,7 +105,7 @@ class ReadFile:
             
     def CaculateSatRefTime(Time):
         TempTime=Time
-        # SateliteRefTime=Time
+        SateliteRefTime=Time
         if( TempTime[3]%2==0):
             TempTime[4]=0
             TempTime[5]=0
@@ -117,9 +117,9 @@ class ReadFile:
             SateliteRefTime= TempTime
         
         if(TempTime[3]==24):
-             TempTime[2]=TempTime[2]+1
+             TempTime[3]+1
              TempTime[3]=0
-        return TempTime
+        return SateliteRefTime
 
     def CaculateSatelites(self):
          for i in range(self.NHeaderLastLine,len(self.NLines)-9,8):

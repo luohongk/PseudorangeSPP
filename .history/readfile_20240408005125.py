@@ -30,14 +30,8 @@ class ReadFile:
 
          self.Satelites=[]
 
-        # 这个表示卫星的位置，初始化的时候是
-         self.Pos=[]
-
-         self.PosName=[]
-
-         self.Time=[]
-
-         self.RefTime=[]
+        # 这个表示卫星的位置，初始化的时候是0，
+         self.Pos=[0,0,0]
     
     @classmethod
     def GetApproxPos(self):
@@ -105,7 +99,7 @@ class ReadFile:
             
     def CaculateSatRefTime(Time):
         TempTime=Time
-        # SateliteRefTime=Time
+        SateliteRefTime=Time
         if( TempTime[3]%2==0):
             TempTime[4]=0
             TempTime[5]=0
@@ -117,9 +111,9 @@ class ReadFile:
             SateliteRefTime= TempTime
         
         if(TempTime[3]==24):
-             TempTime[2]=TempTime[2]+1
+             TempTime[3]+1
              TempTime[3]=0
-        return TempTime
+        return SateliteRefTime
 
     def CaculateSatelites(self):
          for i in range(self.NHeaderLastLine,len(self.NLines)-9,8):
@@ -161,10 +155,7 @@ class ReadFile:
 
                 satelite=Satelite(SateliteName,time,SateliteRefTime,time_change,matrix)
                 satelite.InitPositionOfSat()
-
-                self.Pos.append([satelite.X,satelite.Y,satelite.Z])
-                self.Time.append(time)
-                self.PosName.append(SateliteName)
-                self.RefTime.append(SateliteRefTime)
-
-                self.Satelites.append(satelite)
+                self.X=satelite.X
+                selfY=satelite.Y
+                Z=satelite.Z
+                print(satelite.X)

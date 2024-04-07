@@ -117,7 +117,7 @@ class ReadFile:
             SateliteRefTime= TempTime
         
         if(TempTime[3]==24):
-             TempTime[2]=TempTime[2]+1
+             TempTime[2]+1
              TempTime[3]=0
         return TempTime
 

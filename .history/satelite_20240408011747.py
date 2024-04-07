@@ -53,7 +53,7 @@ class Satelite:
     # 将时间转化为gps时间
     def ctime2gps(time):
             gps_epoch=datetime.datetime(1980,1,6,0,0,0)
-            given_time=datetime.datetime(time[0],time[1],time[2],time[3],time[4],int(time[5]))
+            given_time=datetime.datetime(time[0],time[1],time[2],time[3],time[4],float(time[5]))
             time_diff=given_time-gps_epoch
             total_seconds=time_diff.total_seconds()
             gps_week,gps_seconds=divmod(total_seconds,604800)

@@ -22,11 +22,9 @@ def main():
     
     readfile.CaculateSatelites()
 
-    for i in range(40):
-        print(readfile.Pos[i],readfile.PosName[i],readfile.Time[i],readfile.RefTime[i])
-    
-    print("打印完成")
-
+    for i in range(20):
+        readfile.Pos[i]
+        print("打印结束")
 
 
 

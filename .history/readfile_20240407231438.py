@@ -6,8 +6,6 @@ Description:
 
 Hongkun Luo
 '''
-from satelite import Satelite
-import numpy as np
 class ReadFile:
     def __init__(self, File):
          
@@ -28,16 +26,7 @@ class ReadFile:
          self.NHeaderLastLine=ReadFile.PreprocessNFile(self.NLines)
          self.OHeaderLastLine=ReadFile.PreprocessOFile(self,self.OLines)
 
-         self.Satelites=[]
-
-        # 这个表示卫星的位置，初始化的时候是
-         self.Pos=[]
-
-         self.PosName=[]
-
-         self.Time=[]
-
-         self.RefTime=[]
+         
     
     @classmethod
     def GetApproxPos(self):
@@ -103,68 +92,3 @@ class ReadFile:
                     break       
             return ObsHeaderLine
             
-    def CaculateSatRefTime(Time):
-        TempTime=Time
-        # SateliteRefTime=Time
-        if( TempTime[3]%2==0):
-            TempTime[4]=0
-            TempTime[5]=0
-            SateliteRefTime= TempTime
-        else:
-            TempTime[3]= TempTime[3]+1
-            TempTime[4]=0
-            TempTime[5]=0
-            SateliteRefTime= TempTime
-        
-        if(TempTime[3]==24):
-             TempTime[2]=TempTime[2]+1
-             TempTime[3]=0
-        return TempTime
-
-    def CaculateSatelites(self):
-         for i in range(self.NHeaderLastLine,len(self.NLines)-9,8):
-                
-                line=self.NLines[i]
-                num=line[0:2].strip()
-
-                time=[None]*6
-                # print(line[i+2])
-                time[0]=int((line[3:5]).strip())
-                time[1]=int((line[6:8]).strip())
-                time[2]=int((line[9:11]).strip())
-                time[3]=int((line[12:14]).strip())
-                time[4]=int((line[15:17]).strip())
-                time[5]=float((line[18:22]).strip())
-
-                # 读取卫星钟差改正参数
-                time_change=[]
-                a=float(line[22:37].strip())*pow(10,int(line[38:41].strip()))
-                time_change.append(a)
-
-                b=float(line[41:56].strip())*pow(10,int(line[57:60].strip()))
-                time_change.append(b)
-
-                c=float(line[60:75].strip())*pow(10,int(line[76:79].strip()))
-                time_change.append(c)
-
-                rows=6
-                cols=4
-                matrix=np.zeros((rows,cols))
-
-                # 读取卫星位置计算的参数
-                for j in range(0,rows):
-                    for k in range(0,cols):
-                            matrix[j][k]=float(self.NLines[i+1+j][3+19*k:18+19*k])*pow(10,int(self.NLines[i+1+j][19+19*k:22+19*k]))
-                
-                SateliteName="G"+str(num)
-                SateliteRefTime=ReadFile.CaculateSatRefTime(time)
-
-                satelite=Satelite(SateliteName,time,SateliteRefTime,time_change,matrix)
-                satelite.InitPositionOfSat()
-
-                self.Pos.append([satelite.X,satelite.Y,satelite.Z])
-                self.Time.append(time)
-                self.PosName.append(SateliteName)
-                self.RefTime.append(SateliteRefTime)
-
-                self.Satelites.append(satelite)

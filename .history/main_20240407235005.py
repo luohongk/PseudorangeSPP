@@ -16,16 +16,15 @@ def main():
     File=["./data/abpo3340.23o","./data/al2h3340.23n"]
 
     readfile=ReadFile(File)
-    
-    print("粗略坐标")
+
     print(readfile.ApproxPos)
     
     readfile.CaculateSatelites()
+    for i in range(20):
+        print(readfile.Satelites[i])
+            
+          
 
-    for i in range(40):
-        print(readfile.Pos[i],readfile.PosName[i],readfile.Time[i],readfile.RefTime[i])
-    
-    print("打印完成")
 
 
 

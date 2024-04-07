@@ -33,7 +33,10 @@ class Satelite:
         # 这个是卫星观测值，用于计算卫星的位置，本项目中是一个6乘4的矩阵
         self.SateliteObservation=SateliteObservation
 
-
+        # 这个表示卫星的位置，初始化的时候是0，
+        self.X=0
+        self.Y=0
+        self.Z=0
 
         # 这个是卫星种差改正
         self.Delta_T=0

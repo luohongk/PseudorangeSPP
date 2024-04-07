@@ -10,24 +10,57 @@ import datetime
 import numpy as np
 
 
-class satelite:
+class Satelite:
 
 
-    def __init__(self, SateliteName,Time,SateliteClockCorrect):
+    def __init__(self, SateliteName,Time,SateliteRefTime,SateliteClockCorrect,SateliteObservation):
         # 这个表示卫星的编号，为string类型
         self.SateliteName = SateliteName
 
         # 这个表示卫星所处的时间时间，也就是什么时候观测到的这个卫星的数据，预想的传入一个包含六个元素的数组
         # 包含年月日，时分秒
-        self.Time = satelite.ctime2gps(Time)
+        self.GpsWeek,self.GpsSeconds= Satelite.ctime2gps(Time)
+        
+
+        # 为什么要把年月日十分秒也保存一下,就是方便我计算最近的参考时间
+        # 这里右侧的time是指六个元素的数组
+        self.Time=Time
+        self.SateliteRefTime=Time
 
         # 钟飘？反正传入的时候传一个含有三个元素的数组就可以
         self.SateliteClockCorrect=SateliteClockCorrect
 
+        # 这个是卫星观测值，用于计算卫星的位置，本项目中是一个4乘4的矩阵
+        self.SateliteObservation=SateliteObservation
 
-        # self.age = age
+        # 这个表示卫星的位置，初始化的时候是0，
+        self.X=0
+        self.Y=0
+        self.Z=0
 
+        # 这个是卫星种差改正
+        self.Delta_T=0
 
+    def InitPositionOfSat(self): 
+         [sat_x,sat_y,sat_z,delta_t_value]=Satelite.caculate_pos_of_sat(self.SateliteObservation,self.SateliteClockCorrect,self.Time,self.SateliteRefTime)
+         self.X=sat_x
+         self.Y=sat_y
+         self.Z=sat_z
+         self.Delta_T=delta_t_value
+    
+    def CaculateSatRefTime(self):
+        TempTime=self.Time
+        if( TempTime[3]%2==0):
+            TempTime[4]=0
+            TempTime[5]=0
+            self.SateliteRefTime= TempTime
+        else:
+            TempTime[3]= TempTime[3]+1
+            TempTime[4]=0
+            TempTime[5]=0
+            self.SateliteRefTime= TempTime    
+
+    # 将时间转化为gps时间
     def ctime2gps(time):
             gps_epoch=datetime.datetime(1980,1,6,0,0,0)
             given_time=datetime.datetime(time[0],time[1],time[2],time[3],time[4],int(time[5]))
@@ -35,15 +68,16 @@ class satelite:
             total_seconds=time_diff.total_seconds()
             gps_week,gps_seconds=divmod(total_seconds,604800)
             return gps_week,gps_seconds
-
+    
+    # 计算卫星位置
     def caculate_pos_of_sat(matrix,a3,obstime,reftime):
             GM=3.986005*pow(10,5)
             n0=np.sqrt(GM)/pow(matrix[1,3],3)
             n=n0+matrix[0,2]
 
             # 计算归化时刻
-            gps_obsweek,gps_obssec=satelite.ctime2gps(obstime)
-            gps_refweek,gps_refseconds=satelite.ctime2gps(reftime)
+            gps_obsweek,gps_obssec=Satelite.ctime2gps(obstime)
+            gps_refweek,gps_refseconds=Satelite.ctime2gps(reftime)
 
             delta_t=a3[0]+a3[1]*(gps_obssec-gps_refseconds)+a3[2]*pow(gps_obssec-gps_refseconds,2)
             # t=gps_obssec-delta_t

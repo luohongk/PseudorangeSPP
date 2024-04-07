@@ -56,7 +56,8 @@ class Satelite:
             given_time=datetime.datetime(time[0],time[1],time[2],time[3],time[4],int(time[5]))
             time_diff=given_time-gps_epoch
             total_seconds=time_diff.total_seconds()
-            return total_seconds
+            gps_week,gps_seconds=divmod(total_seconds,604800)
+            return gps_week,gps_seconds
     
     # 计算卫星位置
     def caculate_pos_of_sat(matrix,a3,obstime,reftime):
@@ -65,8 +66,8 @@ class Satelite:
             n=n0+matrix[0,2]
 
             # 计算归化时刻
-            gps_obssec=Satelite.ctime2gps(obstime)
-            gps_refseconds=Satelite.ctime2gps(reftime)
+            gps_obsweek,gps_obssec=Satelite.ctime2gps(obstime)
+            gps_refweek,gps_refseconds=Satelite.ctime2gps(reftime)
 
             delta_t=a3[0]+a3[1]*(gps_obssec-gps_refseconds)+a3[2]*pow(gps_obssec-gps_refseconds,2)
             # t=gps_obssec-delta_t

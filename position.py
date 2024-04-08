@@ -86,8 +86,8 @@ class Position:
                # 直接计算当前位置下的测站位置并且打印
                SatLiteXYZ= self.MatchToSatlite (obs_time,obs_sat_PRN)
 
-               print(ObsPseudorange)
-               print(SatLiteXYZ)
+               # print(ObsPseudorange)
+               # print(SatLiteXYZ)
 
                # 进行非线性最小二乘，平差计算地面坐标
                a=self.SolutionLeastSquares(ObsPseudorange,SatLiteXYZ,ReadFile.ApproxPos)
@@ -199,6 +199,8 @@ class Position:
                ArrayL=np.array(L)
 
                x=np.linalg.inv(np.transpose(ArrayB)@ArrayB)@(np.transpose(ArrayB)@ArrayL)
+               PosXYZ=np.array(ApproxPos)
+               print("平差后的X坐标:",PosXYZ[0]+x[0],"平差后的Y坐标:",PosXYZ[1]+x[1],"平差后的Z坐标:",PosXYZ[2]+x[2])
 
                
                return 1

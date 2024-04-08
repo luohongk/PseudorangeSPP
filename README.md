@@ -6,6 +6,7 @@
  * 
  * Hongkun Luo
 -->
+
 # PseudorangeSPP
 
 本项目为GNSS伪距单点定位python面向对象的版本
@@ -39,7 +40,7 @@ python main.py
 
 ## 定位原理
 
-如果通过广播星历以及观测值文件进行单点定位比较困难，需要熟系观测值文件格式以及卫星位置计算的一些算法。但是就比赛而言，核心的就只有误差方程的建立。因为比赛会直接给你卫星的坐标，GPS时，电离层，对流层延迟就可以。直接根据误差方程构建间接平差模型就可以。
+如果通过广播星历以及观测值文件进行单点定位比较困难，需要熟系观测值文件格式以及卫星位置计算的一些算法。可以再加电离层，对流层延迟。
 
 ### 对于每一个观测伪距
 
@@ -61,13 +62,14 @@ $$
 
 </div>
 
-![L](https://latex.codecogs.com/svg.image?L=c\sigma&space;_{ts}&plus;R^0-\rho&space;_0-Delay)
+![L](https://latex.codecogs.com/svg.image?L=c\sigma&space;_{ts}+R^0-\rho&space;_0-Delay)
 
 有:
 
-![P0](https://latex.codecogs.com/svg.image?%5Crho%20_0=%5Csqrt%7B%5Cleft(x_s-x_%7Br%7D%5E%7B0%7D%5Cright)%5E2&plus;%5Cleft(y_s-y_%7Br%7D%5E%7B0%7D%5Cright)%5E2&plus;%5Cleft(z_s-z_%7Br%7D%5E%7B0%7D%5Cright)%5E2%7D)
+![P0](https://latex.codecogs.com/svg.image?%5Crho%20_0=%5Csqrt%7B%5Cleft(x_s-x_%7Br%7D%5E%7B0%7D%5Cright)%5E2+%5Cleft(y_s-y_%7Br%7D%5E%7B0%7D%5Cright)%5E2+%5Cleft(z_s-z_%7Br%7D%5E%7B0%7D%5Cright)%5E2%7D)
 
 ### 上述公式可以简化为
+
 $$
 V=Bx-L
 $$
@@ -83,6 +85,5 @@ $$
 	x_r=x_r+\varDelta x_r\\
 	y_r=y_r+\varDelta y_r\\
 	z_r=z_r+\varDelta z_r\\
-\end{array} \right. 
+\end{array} \right.
 $$
-

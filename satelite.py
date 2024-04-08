@@ -13,7 +13,7 @@ import numpy as np
 class Satelite:
 
 
-    def __init__(self, SateliteName,Time,SateliteRefTime,SateliteClockCorrect,SateliteObservation):
+    def __init__(self, SateliteName,Time,SateliteClockCorrect,SateliteObservation):
         # 这个表示卫星的编号，为string类型
         self.SateliteName = SateliteName
 
@@ -38,8 +38,8 @@ class Satelite:
         # 这个是卫星种差改正
         self.Delta_T=0
 
-    def InitPositionOfSat(self): 
-         [sat_x,sat_y,sat_z,delta_t_value]=Satelite.caculate_pos_of_sat(self.SateliteObservation,self.SateliteClockCorrect,self.Time,self.SateliteRefTime)
+    def InitPositionOfSat(self,ObsTime): 
+         [sat_x,sat_y,sat_z,delta_t_value]=Satelite.caculate_pos_of_sat(self.SateliteObservation,self.SateliteClockCorrect,ObsTime,self.Time)
          self.X=sat_x
          self.Y=sat_y
          self.Z=sat_z

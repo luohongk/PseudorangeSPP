@@ -9,6 +9,7 @@ Hongkun Luo
 
 from readfile import ReadFile
 from satelite import Satelite
+from position import Position
 def main():
     # 在这里编写你的程序逻辑
     print("这是入口函数")
@@ -18,7 +19,7 @@ def main():
     readfile=ReadFile(File)
     
     print("粗略坐标")
-    print(readfile.ApproxPos)
+    print(ReadFile.ApproxPos)
     
     readfile.CaculateSatelites()
 
@@ -26,6 +27,10 @@ def main():
         print(readfile.Pos[i],readfile.PosName[i],readfile.Time[i])
     
     print("打印完成")
+
+    # 实例化定位对象
+    position=Position(readfile.SateliteObservation,readfile.PosName,readfile.Time,readfile.SateliteClockCorrect)
+    position.MatchObservationAndCaculate()
 
 
 

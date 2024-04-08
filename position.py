@@ -88,12 +88,11 @@ class Position:
                print(ObsPseudorange)
                print(SatLiteXYZ)
 
-               # 进行平差计算地面坐标
-               
+               # 进行非线性最小二乘，平差计算地面坐标
+               a=self.SolutionLeastSquares(ObsPseudorange,SatLiteXYZ,ReadFile.ApproxPos)
 
-               
                # 更新读取的行数
-               NReadLine+2*num_sat
+               NReadLine=NReadLine+2*num_sat
 
                # 更新读取的内容
                line=self.Lines[NReadLine]
@@ -108,7 +107,9 @@ class Position:
           # AfterMatch
           for index, SatPRN in enumerate(ObsSatPrn):
               # 遍历卫星参考时刻的PRN号
-              TemXYZ=[None]*3
+
+          #   这四个元素的说明，前三个元素保存卫星坐标，后一个保存是否匹配上的一个标签值
+              TemXYZ=[None]*4
 
               TimeDiff=[]
               for index1, SatPRN1 in enumerate(self.SateliteName):
@@ -126,19 +127,21 @@ class Position:
                     TemXYZ[0]=0
                     TemXYZ[1]=0
                     TemXYZ[2]=0
+                    TemXYZ[3]=0
               else:
-                                  # 寻找最小时间差的索引
+                    # 寻找最小时间差的索引
                     MinTime = min(TimeDiff)
                     MinTimeindex =TimeDiff.index(MinTime) 
 
-                         # 计算这个最小索引卫星的坐标
+                    # 计算这个最小索引卫星的坐标
                     satelite=Satelite(self.SateliteName[MinTimeindex],self.Time[MinTimeindex],self.SateliteClockCorrect[MinTimeindex],self.SateliteObservation[MinTimeindex])
 
-                         # 这里需要传入观测时间，计算卫星坐标
+                    # 这里需要传入观测时间，计算卫星坐标
                     satelite.InitPositionOfSat(ObsTime)
                     TemXYZ[0]=satelite.X
                     TemXYZ[1]=satelite.Y
                     TemXYZ[2]=satelite.Z
+                    TemXYZ[3]=1
                
               SatLiteXYZ.append(TemXYZ)
           return SatLiteXYZ
@@ -152,8 +155,20 @@ class Position:
           return seconds
      
      # 最小二乘算法求解
-     def SolutionLeastSquares(self,ObsPseudorange,SatLiteXYZ):
+     def SolutionLeastSquares(self,ObsPseudorange,SatLiteXYZ,ApproxPos):
           # 判断匹配上的伪距是否多于四个，因为最小二乘至少要四个观测方程，求解地面坐标，求解接收机钟差
+
+          t=0
+          for i in range(len(SatLiteXYZ)):
+               t=t+SatLiteXYZ[i][3]
+          
+          if(t<4):
+               print("无法进行平差计算")
+               return 0
+          else:
+               return 1
+               
+
           
         
 

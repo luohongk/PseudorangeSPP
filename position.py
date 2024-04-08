@@ -9,6 +9,7 @@ Hongkun Luo
 from readfile import ReadFile
 from satelite import Satelite
 import datetime
+import numpy as np
 class Position:
 
      def __init__(self,SateliteObservation,SateliteName,Time,SateliteClockCorrect):
@@ -79,7 +80,7 @@ class Position:
                     else:
                          Pseudorange=float(line[34:46])
                          
-                         ObsPseudorange.append(Pseudorange)
+                    ObsPseudorange.append(Pseudorange)
 
                
                # 直接计算当前位置下的测站位置并且打印
@@ -108,8 +109,8 @@ class Position:
           for index, SatPRN in enumerate(ObsSatPrn):
               # 遍历卫星参考时刻的PRN号
 
-          #   这四个元素的说明，前三个元素保存卫星坐标，后一个保存是否匹配上的一个标签值
-              TemXYZ=[None]*4
+          #   这四个元素的说明，前三个元素保存卫星坐标，后一个保存是否匹配上的一个标签值,卫星钟差
+              TemXYZ=[None]*5
 
               TimeDiff=[]
               for index1, SatPRN1 in enumerate(self.SateliteName):
@@ -128,6 +129,7 @@ class Position:
                     TemXYZ[1]=0
                     TemXYZ[2]=0
                     TemXYZ[3]=0
+                    TemXYZ[4]=0
               else:
                     # 寻找最小时间差的索引
                     MinTime = min(TimeDiff)
@@ -142,7 +144,7 @@ class Position:
                     TemXYZ[1]=satelite.Y
                     TemXYZ[2]=satelite.Z
                     TemXYZ[3]=1
-               
+                    TemXYZ[4]=satelite.Delta_T             
               SatLiteXYZ.append(TemXYZ)
           return SatLiteXYZ
 
@@ -159,13 +161,46 @@ class Position:
           # 判断匹配上的伪距是否多于四个，因为最小二乘至少要四个观测方程，求解地面坐标，求解接收机钟差
 
           t=0
-          for i in range(len(SatLiteXYZ)):
+          # 平差矩阵的存储
+          B=[]
+          L=[]
+          SizeSatLiteXYZ=len(SatLiteXYZ)
+          for i in range(SizeSatLiteXYZ):
                t=t+SatLiteXYZ[i][3]
           
           if(t<4):
                print("无法进行平差计算")
                return 0
           else:
+               for k in range(SizeSatLiteXYZ):
+                    if(SatLiteXYZ[k][3]==0):
+                      continue
+
+                    if(k==SizeSatLiteXYZ-1):
+                         break
+                    P0=np.sqrt(np.square(SatLiteXYZ[k][0]-ApproxPos[0])+np.square(SatLiteXYZ[k][1]-ApproxPos[1])+np.square(SatLiteXYZ[k][2]-ApproxPos[2]))
+                    
+                    # 计算Bj矩阵每一行的数据
+                    TemB0=-1*(SatLiteXYZ[k][0]-ApproxPos[0])/P0
+                    TemB1=-1*(SatLiteXYZ[k][1]-ApproxPos[1])/P0
+                    TemB2=-1*(SatLiteXYZ[k][2]-ApproxPos[2])/P0
+                    c=3 * (10 ** -8)
+                    TemB3=1
+
+                    TemBRol=[TemB0,TemB1,TemB2,TemB3]
+                    B.append(TemBRol)
+
+                    # 计算L矩阵每一行的数据
+                    TemLRol=ObsPseudorange[k]-P0+c*SatLiteXYZ[k][4]
+                    L.append(TemLRol)
+               
+               # 求解坐标改正量
+               ArrayB=np.array(B)
+               ArrayL=np.array(L)
+
+               x=np.linalg.inv(np.transpose(ArrayB)@ArrayB)@(np.transpose(ArrayB)@ArrayL)
+
+               
                return 1
                
 

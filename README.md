@@ -27,7 +27,9 @@ python main.py
 
 ## 教学视频
 
-待完善(敬请期待)
+<a href="https://www.bilibili.com/video/BV1wZ421q7nD/?spm_id_from=333.999.0.0&vd_source=3d68818394dd7dd28a8186a3fe19fee5">
+  <img src="https://s2.loli.net/2024/04/09/gT5v9oHVpEsCeFi.jpg" alt="B站GNSS伪距单点定位教学">
+</a>
 
 ## 文件解释
 

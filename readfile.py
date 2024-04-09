@@ -22,8 +22,10 @@ class ReadFile:
     #  O文件所有行的数据
     OLines = None
 
+    # O文件"END OF HEADER"所在的行
     OHeaderLastLine = 0
 
+    # 类的初始化函数
     def __init__(self, File):
 
         #  文件路径

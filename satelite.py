@@ -1,11 +1,3 @@
-'''
-Author: Hongkun Luo
-Date: 2024-04-07 19:31:54
-LastEditors: Hongkun Luo
-Description: 
-
-Hongkun Luo
-'''
 import datetime
 import numpy as np
 
@@ -34,10 +26,15 @@ class Satelite:
         # 这个是卫星种差改正
         self.Delta_T = 0
 
+    #  计算卫星位置的函数得出结果
     def InitPositionOfSat(self, ObsTime):
-        [sat_x, sat_y, sat_z, delta_t_value] = Satelite.caculate_pos_of_sat(self.SateliteObservation,
-                                                                            self.SateliteClockCorrect, ObsTime,
-                                                                            self.Time)
+
+        # 计算卫星位置具体函数
+        [sat_x, sat_y, sat_z, delta_t_value] = Satelite.caculate_pos_of_sat(
+            self.SateliteObservation, self.SateliteClockCorrect, ObsTime, self.Time
+        )
+
+        # 将结果放入当前函数对象中
         self.X = sat_x
         self.Y = sat_y
         self.Z = sat_z
@@ -50,7 +47,9 @@ class Satelite:
     # 将时间转化为gps时间
     def ctime2gps(time):
         gps_epoch = datetime.datetime(1980, 1, 6, 0, 0, 0)
-        given_time = datetime.datetime(time[0], time[1], time[2], time[3], time[4], int(time[5]))
+        given_time = datetime.datetime(
+            time[0], time[1], time[2], time[3], time[4], int(time[5])
+        )
         time_diff = given_time - gps_epoch
         total_seconds = time_diff.total_seconds()
         gps_week, gps_seconds = divmod(total_seconds, 604800)
@@ -66,7 +65,11 @@ class Satelite:
         gps_obsweek, gps_obssec = Satelite.ctime2gps(obstime)
         gps_refweek, gps_refseconds = Satelite.ctime2gps(reftime)
 
-        delta_t = a3[0] + a3[1] * (gps_obssec - gps_refseconds) + a3[2] * pow(gps_obssec - gps_refseconds, 2)
+        delta_t = (
+            a3[0]
+            + a3[1] * (gps_obssec - gps_refseconds)
+            + a3[2] * pow(gps_obssec - gps_refseconds, 2)
+        )
         # t=gps_obssec-delta_t
         t = gps_refseconds - delta_t
         tk = t - matrix[2, 0]
@@ -79,14 +82,20 @@ class Satelite:
         Ek_old = Ek
         for i in range(10):
             Ek = Mk + matrix[1, 1] * np.sin(Ek)
-            if (abs(Ek - Ek_old) < 1e-10):
+            if abs(Ek - Ek_old) < 1e-10:
                 break
             else:
                 Ek_old = Ek
 
         cos_Vk = (np.cos(Ek) - matrix[1, 1]) / (1 - matrix[1, 1] * np.cos(Ek))
-        sin_Vk = (np.sqrt(1 - matrix[1, 1] * matrix[1, 1]) * np.sin(Ek)) / (1 - matrix[1, 1] * np.cos(Ek))
-        Vk = np.arctan(np.sqrt(1 - matrix[1, 1] * matrix[1, 1]) * np.sin(Ek) / (np.cos(Ek) - matrix[1, 1]))
+        sin_Vk = (np.sqrt(1 - matrix[1, 1] * matrix[1, 1]) * np.sin(Ek)) / (
+            1 - matrix[1, 1] * np.cos(Ek)
+        )
+        Vk = np.arctan(
+            np.sqrt(1 - matrix[1, 1] * matrix[1, 1])
+            * np.sin(Ek)
+            / (np.cos(Ek) - matrix[1, 1])
+        )
 
         phi_k = Vk + matrix[3, 2]
         phi_k = phi_k % (np.pi * 2)

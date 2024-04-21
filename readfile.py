@@ -1,11 +1,12 @@
-'''
+"""
 Author: Hongkun Luo
 Date: 2024-04-07 20:04:05
 LastEditors: Hongkun Luo
 Description: 
 
 Hongkun Luo
-'''
+"""
+
 from satelite import Satelite
 import numpy as np
 
@@ -88,13 +89,13 @@ class ReadFile:
         return self.NHeaderLastLine
 
     def ReadNFile(self):
-        with open(self.nFilePath, 'r') as file:
+        with open(self.nFilePath, "r") as file:
             lines = file.readlines()
             ReadFile.NLines = lines
             return lines
 
     def ReadOFile(self):
-        with open(self.oFilePath, 'r') as file:
+        with open(self.oFilePath, "r") as file:
             lines = file.readlines()
             ReadFile.OLines = lines
             return lines
@@ -102,8 +103,10 @@ class ReadFile:
     def PreprocessNFile(lines):
 
         # 寻找END OF HEADER所在的行
-        target_string = 'END OF HEADER'
+        target_string = "END OF HEADER"
         HeadLine = 0
+
+        # 遍历行，如果找到了end of header就记录并且退出
         for i, line in enumerate(lines, start=1):
             if target_string in line:
                 HeadLine = i
@@ -114,10 +117,12 @@ class ReadFile:
         # if('GPS' in lines[0]):
         #     obs_type='GPS'
 
+    # O文件的预处理，进行粗略坐标的读取
     def PreprocessOFile(self, lines):
-        ApproxPosComment = 'APPROX POSITION XYZ'
+        ApproxPosComment = "APPROX POSITION XYZ"
         for i, line in enumerate(lines, start=1):
-            if (ApproxPosComment in line):
+            # 读取粗略坐标
+            if ApproxPosComment in line:
                 approx_x = float(line[0:15].strip())
                 approx_y = float(line[15:28].strip())
                 approx_z = float(line[29:42].strip())
@@ -125,11 +130,12 @@ class ReadFile:
                 self.ApproxPos.append(approx_y)
                 self.ApproxPos.append(approx_z)
 
-        ObsTargetString = 'END OF HEADER'
+        ObsTargetString = "END OF HEADER"
         ObsHeaderLine = 0
 
+        # 寻找END OF HEADER所在的行
         for i, line in enumerate(lines, start=1):
-            if (ObsTargetString in line):
+            if ObsTargetString in line:
                 ObsHeaderLine = i
                 break
 
@@ -173,8 +179,9 @@ class ReadFile:
             # 读取卫星位置计算的参数
             for j in range(0, rows):
                 for k in range(0, cols):
-                    matrix[j][k] = float(self.NLines[i + 1 + j][3 + 19 * k:18 + 19 * k]) * pow(10, int(
-                        self.NLines[i + 1 + j][19 + 19 * k:22 + 19 * k]))
+                    matrix[j][k] = float(
+                        self.NLines[i + 1 + j][3 + 19 * k : 18 + 19 * k]
+                    ) * pow(10, int(self.NLines[i + 1 + j][19 + 19 * k : 22 + 19 * k]))
 
             self.SateliteObservation.append(matrix)
 

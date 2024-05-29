@@ -212,7 +212,7 @@ class Position:
                 TemB0 = -1 * (SatLiteXYZ[k][0] - ApproxPos[0]) / P0
                 TemB1 = -1 * (SatLiteXYZ[k][1] - ApproxPos[1]) / P0
                 TemB2 = -1 * (SatLiteXYZ[k][2] - ApproxPos[2]) / P0
-                c = 3 * (10**-8)
+                c = 3 * (10**8)
                 TemB3 = 1
 
                 TemBRol = [TemB0, TemB1, TemB2, TemB3]
